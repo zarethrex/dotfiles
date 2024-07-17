@@ -6,6 +6,8 @@ return {
       "mypy",
       "ruff-lsp",
       "pyright",
+      "ansible-language-server",
+      "ansible-lint",
     },
   },
 }
