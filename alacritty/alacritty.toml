@@ -1,0 +1,14 @@
+[shell]
+program = "C:\\msys64\\msys2_shell.cmd"
+args = ["-defterm", "-use-full-path", "-no-start", "-mingw64", "-where %HOMEPATH%"]
+
+[font.normal]
+family = "FiraCode Nerd Font"
+style = "Medium"
+
+[font.bold]
+family = "FiraCode Nerd Font"
+style = "Bold"
+
+[terminal]
+osc52 = "CopyPaste"
