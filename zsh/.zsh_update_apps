@@ -1,0 +1,230 @@
+# The following update scripts assume a Debian based Linux Distribution
+# these should not be included in other OSes
+
+# Update Act GitHub Runner
+update_act() {
+  # If Act is not installed skip
+  if ! which act > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest Act version..."
+	LATEST_ACT_VERSION=$(curl -s https://github.com/nektos/act/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	CURRENT_ACT_VERSION=$(act --version | cut -d ' ' -f 3 | xargs)
+	if [ "${LATEST_ACT_VERSION}" = "${CURRENT_ACT_VERSION}" ]; then
+		echo "Act already latest version."
+		return 0
+	fi
+	sudo echo "Installing Act v${LATEST_ACT_VERSION}"
+	DOWNLOAD_URL="https://github.com/nektos/act/releases/download/v${LATEST_ACT_VERSION}/act_Linux_x86_64.tar.gz"	
+	cd $HOME/Downloads
+	wget $DOWNLOAD_URL
+	tar -xf act_Linux_x86_64.tar.gz
+	sudo mv act /usr/local/bin/act
+	rm -rf act_Linux_x86_64*
+	echo "Installed Act v${LATEST_ACT_VERSION}"
+	cd -
+}
+
+# Update the Ninja generator
+update_ninja() {
+  # If Ninja is not installed skip
+  if ! which ninja > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest Ninja version..."
+	LATEST_NINJA_VERSION=$(curl -s https://github.com/ninja-build/ninja/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	CURRENT_NINJA_VERSION=$(ninja --version | xargs)
+	if [ "${LATEST_NINJA_VERSION}" = "${CURRENT_NINJA_VERSION}" ]; then
+		echo "Ninja already latest version."
+		return 0
+	fi
+	sudo echo "Installing Ninja v${LATEST_NINJA_VERSION}"
+	DOWNLOAD_URL="https://github.com/ninja-build/ninja/releases/download/v${LATEST_NINJA_VERSION}/ninja-linux.zip"	
+	cd $HOME/Downloads
+	wget $DOWNLOAD_URL
+	unzip ninja-linux.zip
+	sudo mv ninja /usr/bin/ninja
+	rm ninja-linux.zip
+	echo "Installed Ninja v${LATEST_NINJA_VERSION}"
+	cd -
+}
+
+# Update the Rust version
+update_rust() {
+  # If Rust is not installed skip
+  if ! which rustup > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest Rust version..."
+	LATEST_RUST_VERSION=$(curl -s https://github.com/rust-lang/rust/releases/ | grep -oE "[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d ' ' -f 2 | xargs)
+	CURRENT_RUST_VERSION=$(cargo --version | cut -d ' ' -f 2 | xargs)
+	if [ "${LATEST_RUST_VERSION}" = "${CURRENT_RUST_VERSION}" ]; then
+		echo "Rust already latest version."
+		return 0
+	fi
+	rustup update
+}
+
+# Update the Powershell version
+update_powershell() {
+  # If Powershell is not installed skip
+  if ! which pwsh > /dev/null 2>&1; then
+      return
+  fi
+  echo "Checking for latest Powershell version..."
+	LATEST_PS_VERSION=$(curl -s https://github.com/PowerShell/PowerShell/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	CURRENT_PS_VERSION=$(pwsh --version | cut -d ' ' -f 2 | xargs)
+	if [ "${LATEST_PS_VERSION}" = "${CURRENT_PS_VERSION}" ]; then
+		echo "PowerShell already latest version."
+		return 0
+	fi
+	sudo echo "Installing PowerShell v${LATEST_PS_VERSION}"
+	DOWNLOAD_URL="https://github.com/PowerShell/PowerShell/releases/download/v${LATEST_PS_VERSION}/powershell_${LATEST_PS_VERSION}-1.deb_amd64.deb"	
+	cd $HOME/Downloads
+	wget $DOWNLOAD_URL
+	sudo dpkg -i --ignore-depends=libicu72 powershell_${LATEST_PS_VERSION}-1.deb_amd64.deb
+	rm powershell_${LATEST_PS_VERSION}-1.deb_amd64.deb
+	echo "Installed PowerShell v${LATEST_PS_VERSION}"
+	cd -
+}
+
+update_julia() {
+  # If Julia is not installed then skip
+  if ! which julia > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest Julia version..."
+	START_DIRECTORY=$PWD
+	LATEST_JULIA_VERSION=$(curl -s https://github.com/JuliaLang/julia/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	JULIA_MINOR_VERSION=$(echo $LATEST_JULIA_VERSION | grep -oE "^[0-9]+\.[0-9]+")
+	if [ ! -z "$(which julia)" ]; then
+		CURRENT_JULIA_VERSION=$(julia --version | cut -d ' ' -f 3 | xargs)
+		if [ "${CURRENT_JULIA_VERSION}" = "${LATEST_JULIA_VERSION}" ]; then
+			echo "Julia is latest version of ${LATEST_JULIA_VERSION}"
+			return 0
+		fi
+	fi
+	echo "Installing Julia v${LATEST_JULIA_VERSION}"
+	DOWNLOAD_URL="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MINOR_VERSION}/julia-${LATEST_JULIA_VERSION}-linux-x86_64.tar.gz"
+	cd $HOME/Downloads
+	wget ${DOWNLOAD_URL}
+	tar -xf julia-${LATEST_JULIA_VERSION}-linux-x86_64.tar.gz
+	JULIA_DIRECTORY=$HOME/Applications/Julia
+	if [ -d "${JULIA_DIRECTORY}" ]; then
+		rm -r $JULIA_DIRECTORY
+	fi
+	mv $PWD/julia-${LATEST_JULIA_VERSION} $JULIA_DIRECTORY
+	echo "Installation complete"
+	rm -r julia-*
+	cd -
+	cd $START_DIRECTORY
+}
+
+# Update Pyenv Python version
+update_python() {
+  # If Pyenv is not installed then skip
+  if ! which pyenv > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest Python version..."
+	cd $HOME/.pyenv/src
+	CURRENT_GIT_HASH=$(git rev-parse --short HEAD | xargs)
+	VENV_MODULES=$(python -m pip freeze -l | awk -F '=' '/1/ {print $1}' | xargs)
+	git pull > /dev/null
+	NEW_GIT_HASH=$(git rev-parse --short HEAD | xargs)
+	cd - > /dev/null
+	if [ "${CURRENT_GIT_HASH}" = "${NEW_GIT_HASH}" ]; then
+		echo "No updates found in PyEnv repository"
+	fi
+	PYTHON_LATEST=$(pyenv install --list | grep -E '^[[:space:]]+[[:digit:]].[[:digit:]]+.[[:digit:]]+$' | tail -n 1 | xargs)
+	PYTHON_CURRENT=$(python --version | cut -d ' ' -f 2 | xargs)
+	echo "Current version of Python is $PYTHON_CURRENT"
+	if [ "$PYTHON_CURRENT" = "$PYTHON_LATEST" ]; then
+		echo "Installed Python is already latest version"
+		return 0
+	fi
+	echo "Uninstalling modules installed with pip"
+	INSTALLED_MODULES=$(pip freeze | xargs)
+	if [ ! -z $INSTALLED_MODULES ]; then
+		pip uninstall ${INSTALLED_MODULES} -y
+	fi
+	pyenv uninstall -f $PYTHON_CURRENT
+	pyenv install -f ${PYTHON_LATEST}
+	pyenv global ${PYTHON_LATEST}
+	pyenv rehash
+	pip install --upgrade pip
+	pip install $VENV_MODULES
+}
+
+# Check for latest CMake version
+update_cmake() {
+  # If CMake is not installed then skip
+  if ! which cmake > /dev/null 2>&1; then
+    return
+  fi
+  echo "Checking for latest CMake version..."
+	current_dir=$PWD
+	LATEST_CMAKE_RC=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Release Candidate " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\-rc[0-9]+" | xargs)
+	LATEST_CMAKE_RC_VERSION=$(echo $LATEST_CMAKE_RC | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
+	LATEST_CMAKE_VERSION=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Latest Release " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
+	UPDATE_RC=""
+	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
+	if [ "$LATEST_CMAKE_RC_VERSION" = "$LATEST_CMAKE_VERSION" ]; then
+		echo "Found full release of $LATEST_CMAKE_VERSION, unknown if this is latest release candidate '$LATEST_CMAKE_RC'."
+		vared -p "Do you wish to install it? (y/N) " -c INSTALL
+	      	if [ -z "$INSTALL" ] || [ "$INSTALL" = "n" ]; then
+			return 0
+		fi
+		LATEST_CMAKE_RC=""
+		RC_TO_FULL_RELEASE="True"
+	fi
+
+	
+	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_CMAKE_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
+		echo "Installed CMake is already latest version"
+		return 0
+	elif [ "$CURRENT_CMAKE_VERSION" = "$(echo "$LATEST_CMAKE_VERSION" | cut -d '-' -f 1 | xargs)" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
+		echo "The latest version '$LATEST_CMAKE_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
+		echo "however it is a release candidate, you should check the date of release and perform a manual update if required."
+		vared -p "Do you wish to install it? (Y/n) " -c INSTALL
+	      	if [ -n "$INSTALL" ] && [ "$INSTALL" = "n" ]; then
+			return 0
+		fi
+	fi
+	echo "Found version $LATEST_CMAKE_VERSION, installing..."
+	cd $HOME/Downloads
+	wget https://github.com/Kitware/CMake/releases/download/v$LATEST_CMAKE_VERSION/cmake-$LATEST_CMAKE_VERSION.tar.gz
+	tar -xf $HOME/Downloads/cmake-$LATEST_CMAKE_VERSION.tar.gz
+	cd cmake-$LATEST_CMAKE_VERSION
+	CC=clang CXX=clang++ cmake -Bbuild -G Ninja
+	cmake --build build
+	sudo cmake --build build --target install
+	cd - > /dev/null
+	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
+	if [ "$CURRENT_CMAKE_VERSION" != "$LATEST_CMAKE_VERSION" ]; then
+		echo "Failed to install latest CMake"
+		cd $current_dir
+		return 1
+	fi
+	rm -rf cmake-*
+	cd $current_dir
+}
+
+# Run all upgrade scripts and also update packages
+function update_all() {
+	sudo apt update
+	echo "Running Upgrades..."
+	sudo apt upgrade --with-new-pkgs -y
+	echo "Tidying Up..."
+	sudo apt autoremove
+	echo "Refreshing Snap..."
+	yes | sudo snap refresh
+	echo "Checking Other Packages..."
+	update_cmake
+	update_python
+	update_ninja
+	update_julia
+	update_powershell
+	update_act
+	update_rust
+}

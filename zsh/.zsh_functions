@@ -1,0 +1,40 @@
+# Debian based additional functions
+
+# Perform a deep clean
+system_clean() {
+	yes | rm -rf $HOME/.cache/*
+	sudo apt clean
+
+  if which podman > /dev/null 2>&1; then
+	  for image in $(podman image list -nq); do
+	     yes | podman rmi $image
+	  done
+  fi
+  if which docker > /dev/null 2>&1; then
+    # Clean Docker images on default docker (rootless etc)
+	  for image in $(docker image list -q); do
+	      yes | docker rmi $image
+	  done
+
+    # Clean Docker images on sudo docker
+    sudo systemctl start docker
+	  for image in $(docker image list -q); do
+	      yes | sudo docker rmi $image
+	  done
+
+  fi
+	yes | podman system prune -a --volumes
+	yes | docker system prune -a --volumes
+	yes | sudo docker system prune -a --volumes
+}
+
+# Clean the Pycache
+pycache_clean() {
+	CACHE_DIRS=$(find $PWD -name "__pycache__" -type d | xargs)
+       	if [ -z "$CACHE_DIRS" ]; then
+	       echo 'No directories found.'
+	       return 0
+	fi
+	rm -rf $CACHE_DIRS
+
+}
