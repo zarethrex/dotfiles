@@ -227,4 +227,6 @@ function update_all() {
 	update_powershell
 	update_act
 	update_rust
+  echo "Running AV scan..."
+  clamscan --bell
 }
