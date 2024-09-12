@@ -49,6 +49,7 @@ return {
 				null_ls.builtins.diagnostics.hadolint,
 				null_ls.builtins.diagnostics.cppcheck,
 				null_ls.builtins.diagnostics.cmake_lint,
+				null_ls.builtins.diagnostics.actionlint,
 			},
 		})
 	end,
