@@ -228,5 +228,5 @@ function update_all() {
 	update_act
 	update_rust
   echo "Running AV scan..."
-  clamscan --bell
+  freshclam && clamscan --bell -r $HOME
 }
