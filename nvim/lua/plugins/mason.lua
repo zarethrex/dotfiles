@@ -14,6 +14,8 @@ return {
 			"ruby-lsp",
 			"hadolint",
 			"markdownlint-cli2",
+			"bash-language-server",
+			"pylint",
 			"markdown-toc",
 			"cmakelang",
 			"cmakelint",

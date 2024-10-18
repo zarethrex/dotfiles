@@ -60,13 +60,19 @@ require("lazy").setup({
 		},
 	},
 })
-require("colorizer").setup({})
+require("colorizer").setup({ "css", "markdown" })
 require("neotest").setup({
 	adapters = {
 		require("neotest-python")({
 			dap = { justMyCode = false },
 			runner = "pytest",
 			python = ".venv/bin/python",
+			pytest_discover_instances = true,
 		}),
+	},
+})
+require("coverage").setup({
+	opts = {
+		auto_reload = true,
 	},
 })
