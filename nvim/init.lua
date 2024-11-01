@@ -2,6 +2,7 @@ require("config.lazy")
 require("lspconfig").ruff_lsp.setup({})
 require("code_runner").setup({})
 require("luarocks-nvim").setup()
+require("devcontainer").setup({})
 
 -- Function to ensure marp-cli is installed via npm
 local function ensure_marp_installed()
@@ -26,3 +27,4 @@ end
 
 -- Call the function to ensure marp-cli is installed
 ensure_marp_installed()
+
