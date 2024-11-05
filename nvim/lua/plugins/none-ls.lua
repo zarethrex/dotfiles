@@ -45,11 +45,12 @@ return {
 						"--python-executable=" .. result,
 					},
 				}),
-				null_ls.builtins.diagnostics.markdownlint_cli2,
+				null_ls.builtins.diagnostics.markdownlint,
 				null_ls.builtins.diagnostics.hadolint,
 				null_ls.builtins.diagnostics.cppcheck,
 				null_ls.builtins.diagnostics.cmake_lint,
 				null_ls.builtins.diagnostics.actionlint,
+				null_ls.builtins.diagnostics.cpplint,
 			},
 		})
 	end,
