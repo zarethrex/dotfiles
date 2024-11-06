@@ -1,3 +1,10 @@
+-- Function to check if the Sourcery config file exists
+local function has_sourcery_config()
+	local cwd = vim.fn.getcwd() -- Get the current working directory
+	local config_path = cwd .. "/" .. ".sourcery.yaml"
+	return vim.fn.filereadable(config_path) == 1 -- Check if the file is readable
+end
+
 return {
 	"neovim/nvim-lspconfig",
 	config = function()
@@ -19,6 +26,9 @@ return {
 		require("lspconfig").ruff.setup({
 			filetypes = { "python" },
 		})
+		if has_sourcery_config() then
+			require("lspconfig").sourcery.setup({})
+		end
 		require("lspconfig").ansiblels.setup({
 			filetypes = { "yaml.ansible" },
 		})
@@ -87,6 +97,53 @@ return {
 			},
 			standardrb = {
 				enabled = formatter == "standardrb",
+			},
+			sourcery = {
+				default_config = {
+					cmd = { "sourcery", "lsp" },
+					filetypes = { "python" },
+					init_options = {
+						editor_version = "vim",
+						extension_version = "vim.lsp",
+						token = nil,
+					},
+					root_dir = function(fname)
+						return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname)
+					end,
+					single_file_support = true,
+				},
+				on_new_config = function(new_config, _)
+					if not new_config.init_options.token then
+						local notify = vim.notify_once or vim.notify
+						notify(
+							"[lspconfig] The authentication token must be provided in config.init_options",
+							vim.log.levels.ERROR
+						)
+					end
+				end,
+				docs = {
+					description = [[
+            https://github.com/sourcery-ai/sourcery
+            
+            Refactor Python instantly using the power of AI.
+            
+            It requires the initializationOptions param to be populated as shown below and will respond with the list of ServerCapabilities that it supports.
+            
+            init_options = {
+                --- The Sourcery token for authenticating the user.
+                --- This is retrieved from the Sourcery website and must be
+                --- provided by each user. The extension must provide a
+                --- configuration option for the user to provide this value.
+                token = <YOUR_TOKEN>
+            
+                --- The extension's name and version as defined by the extension.
+                extension_version = 'vim.lsp'
+            
+                --- The editor's name and version as defined by the editor.
+                editor_version = 'vim'
+            }
+            ]],
+				},
 			},
 			taplo = {
 				keys = {
