@@ -16,7 +16,7 @@ return {
 				},
 			},
 		})
-		require("lspconfig").ruff_lsp.setup({
+		require("lspconfig").ruff.setup({
 			filetypes = { "python" },
 		})
 		require("lspconfig").ansiblels.setup({
@@ -67,7 +67,7 @@ return {
 					},
 				},
 			},
-			ruff_lsp = {
+			ruff = {
 				keys = {
 					{
 						"<leader>co",
