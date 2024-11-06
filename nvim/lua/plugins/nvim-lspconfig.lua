@@ -27,6 +27,10 @@ return {
 			filetypes = { "python" },
 		})
 		if has_sourcery_config() then
+			if not vim.env.SOURCERY_AI_TOKEN then
+				vim.notify("Environment variable SOURCERY_AI_TOKEN unset", vim.log.levels.ERROR)
+				return
+			end
 			require("lspconfig").sourcery.setup({})
 		end
 		require("lspconfig").ansiblels.setup({
@@ -105,7 +109,7 @@ return {
 					init_options = {
 						editor_version = "vim",
 						extension_version = "vim.lsp",
-						token = nil,
+						token = vim.env.SOURCERY_AI_TOKEN,
 					},
 					root_dir = function(fname)
 						return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname)
