@@ -16,6 +16,7 @@ return {
 			"markdownlint",
 			"bash-language-server",
 			"pylint",
+			"texlab",
 			"markdown-toc",
 			"cmakelang",
 			"cmakelint",

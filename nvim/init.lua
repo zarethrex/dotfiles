@@ -1,6 +1,5 @@
 require("config.lazy")
 require("lspconfig").ruff.setup({})
-require("code_runner").setup({})
 require("luarocks-nvim").setup()
 require("devcontainer").setup({})
 

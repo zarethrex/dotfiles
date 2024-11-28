@@ -21,6 +21,9 @@ return {
 						ignore = { "*" },
 					},
 				},
+				mypy = {
+					extraArgs = { "--ignore-missing-imports" },
+				},
 			},
 		})
 		require("lspconfig").ruff.setup({
@@ -33,12 +36,16 @@ return {
 			end
 			require("lspconfig").sourcery.setup({})
 		end
+		require("lspconfig").julials.setup({
+			filetypes = { "julia", "jl" },
+		})
 		require("lspconfig").ansiblels.setup({
 			filetypes = { "yaml.ansible" },
 		})
 		require("lspconfig").taplo.setup({
 			filetypes = { "toml" },
 		})
+		require("lspconfig").texlab.setup({})
 		require("lspconfig").ruby_lsp.setup({
 			filetypes = {
 				"ruby",
