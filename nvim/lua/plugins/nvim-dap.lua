@@ -1,5 +1,8 @@
 return {
 	"mfussenegger/nvim-dap",
+	config = function()
+		require("dap").defaults.fallback.exception_breakpoints = { "raised" }
+	end,
 	keys = {
 		{ "<leader>db", "<cmd>DapToggleBreakpoint<CR>" },
 		{

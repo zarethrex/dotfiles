@@ -36,6 +36,9 @@ return {
 			end
 			require("lspconfig").sourcery.setup({})
 		end
+		require("lspconfig").clangd.setup({
+			filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+		})
 		require("lspconfig").julials.setup({
 			filetypes = { "julia", "jl" },
 		})

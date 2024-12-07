@@ -3,6 +3,7 @@ return {
 	opts = {
 		ensure_installed = {
 			"debugpy",
+			"cspell",
 			"mypy",
 			"ruff-lsp",
 			"pyright",
@@ -23,6 +24,7 @@ return {
 			"cpptools",
 			"cpplint",
 			"codelldb",
+			"clangd",
 		},
 	},
 }
