@@ -38,6 +38,10 @@ return {
 		end
 		require("lspconfig").clangd.setup({
 			filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+			cmd = {
+				"clangd",
+				"--offset-encoding=utf-16",
+			},
 		})
 		require("lspconfig").julials.setup({
 			filetypes = { "julia", "jl" },

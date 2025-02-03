@@ -60,6 +60,7 @@ require("lazy").setup({
 	},
 })
 require("colorizer").setup({ "css", "markdown" })
+require("spectre").setup({})
 require("neotest").setup({
 	adapters = {
 		require("neotest-python")({

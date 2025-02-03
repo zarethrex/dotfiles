@@ -20,8 +20,8 @@ return {
 					prefer_local = get_venv_python_bin(),
 				}),
 				null_ls.builtins.diagnostics.cppcheck,
-				null_ls.builtins.diagnostics.cpplint,
 				null_ls.builtins.formatting.ruff,
+				null_ls.builtins.diagnostics.hadolint,
 			},
 		})
 	end,

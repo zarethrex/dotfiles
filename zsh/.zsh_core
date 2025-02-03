@@ -53,6 +53,9 @@ fi
 if which btop > /dev/null 2>&1; then
   alias top="btop"
 fi
+if which bat > /dev/null 2>&1; then
+  alias cat="bat"
+fi
 if which dockly > /dev/null 2>&1; then
   alias dockly="dockly -s $XDG_RUNTIME_DIR/docker.sock"
 fi
@@ -64,6 +67,8 @@ if which ncdu > /dev/null 2>&1; then
 fi
 alias rm="rm --interactive=never"
 alias map="telnet mapscii.me"
+
+export PATH=$PATH:$HOME/.pyenv/versions/3.10.14/bin
 
 # Load Update Functions if on Debian
 if [ -f $HOME/.zsh_update_apps ]; then
