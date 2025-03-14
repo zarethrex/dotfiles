@@ -53,6 +53,7 @@ return {
 			filetypes = { "toml" },
 		})
 		require("lspconfig").texlab.setup({})
+		require("lspconfig").cmake.setup({})
 		require("lspconfig").ruby_lsp.setup({
 			filetypes = {
 				"ruby",
