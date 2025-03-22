@@ -26,6 +26,11 @@ return {
 				},
 			},
 		})
+		require("lspconfig").rust_analyzer.setup({
+			on_attach = function(client, bufnr)
+				require("crates").show()
+			end,
+		})
 		require("lspconfig").ruff.setup({
 			filetypes = { "python" },
 		})
@@ -44,6 +49,13 @@ return {
 		})
 		require("lspconfig").ansiblels.setup({
 			filetypes = { "yaml.ansible" },
+		})
+		require("lspconfig").docker_compose_language_service.setup({
+			filetypes = { "yaml" },
+			condition = function(utils)
+				local filename = vim.fn.expand("%:t")
+				return filename == "docker-compose.yaml"
+			end,
 		})
 		require("lspconfig").taplo.setup({
 			filetypes = { "toml" },
