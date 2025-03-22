@@ -43,6 +43,10 @@ return {
 		end
 		require("lspconfig").clangd.setup({
 			filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+			cmd = {
+				"clangd",
+				"--offset-encoding=utf-16",
+			},
 		})
 		require("lspconfig").julials.setup({
 			filetypes = { "julia", "jl" },
@@ -61,6 +65,7 @@ return {
 			filetypes = { "toml" },
 		})
 		require("lspconfig").texlab.setup({})
+		require("lspconfig").cmake.setup({})
 		require("lspconfig").ruby_lsp.setup({
 			filetypes = {
 				"ruby",

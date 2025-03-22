@@ -86,6 +86,7 @@ require("rust-tools").setup({
 	end,
 })
 require("colorizer").setup({ "css", "markdown" })
+require("spectre").setup({})
 require("neotest").setup({
 	adapters = {
 		require("neotest-python")({

@@ -7,8 +7,8 @@ update_act() {
   if ! which act > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest Act version..."
-	LATEST_ACT_VERSION=$(curl -s https://github.com/nektos/act/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+    echo "Checking for latest Act version..."
+	LATEST_ACT_VERSION=$(curl -s https://github.com/nektos/act/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
 	CURRENT_ACT_VERSION=$(act --version | cut -d ' ' -f 3 | xargs)
 	if [ "${LATEST_ACT_VERSION}" = "${CURRENT_ACT_VERSION}" ]; then
 		echo "Act already latest version."
@@ -31,8 +31,8 @@ update_ninja() {
   if ! which ninja > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest Ninja version..."
-	LATEST_NINJA_VERSION=$(curl -s https://github.com/ninja-build/ninja/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+    echo "Checking for latest Ninja version..."
+	LATEST_NINJA_VERSION=$(curl -s https://github.com/ninja-build/ninja/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
 	CURRENT_NINJA_VERSION=$(ninja --version | xargs)
 	if [ "${LATEST_NINJA_VERSION}" = "${CURRENT_NINJA_VERSION}" ]; then
 		echo "Ninja already latest version."
@@ -55,8 +55,8 @@ update_rust() {
   if ! which rustup > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest Rust version..."
-	LATEST_RUST_VERSION=$(curl -s https://github.com/rust-lang/rust/releases/ | grep -oE "[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d ' ' -f 2 | xargs)
+    echo "Checking for latest Rust version..."
+	LATEST_RUST_VERSION=$(curl -s https://github.com/rust-lang/rust/releases/ | grep -oE "[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d ' ' -f 2 | xargs)
 	CURRENT_RUST_VERSION=$(cargo --version | cut -d ' ' -f 2 | xargs)
 	if [ "${LATEST_RUST_VERSION}" = "${CURRENT_RUST_VERSION}" ]; then
 		echo "Rust already latest version."
@@ -71,8 +71,8 @@ update_powershell() {
   if ! which pwsh > /dev/null 2>&1; then
       return
   fi
-  echo "Checking for latest Powershell version..."
-	LATEST_PS_VERSION=$(curl -s https://github.com/PowerShell/PowerShell/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+    echo "Checking for latest Powershell version..."
+	LATEST_PS_VERSION=$(curl -s https://github.com/PowerShell/PowerShell/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
 	CURRENT_PS_VERSION=$(pwsh --version | cut -d ' ' -f 2 | xargs)
 	if [ "${LATEST_PS_VERSION}" = "${CURRENT_PS_VERSION}" ]; then
 		echo "PowerShell already latest version."
@@ -93,9 +93,9 @@ update_julia() {
   if ! which julia > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest Julia version..."
+    echo "Checking for latest Julia version..."
 	START_DIRECTORY=$PWD
-	LATEST_JULIA_VERSION=$(curl -s https://github.com/JuliaLang/julia/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	LATEST_JULIA_VERSION=$(curl -s https://github.com/JuliaLang/julia/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
 	JULIA_MINOR_VERSION=$(echo $LATEST_JULIA_VERSION | grep -oE "^[0-9]+\.[0-9]+")
 	if [ ! -z "$(which julia)" ]; then
 		CURRENT_JULIA_VERSION=$(julia --version | cut -d ' ' -f 3 | xargs)
@@ -126,7 +126,7 @@ update_python() {
   if ! which pyenv > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest Python version..."
+    echo "Checking for latest Python version..."
 	cd $HOME/.pyenv/src
 	CURRENT_GIT_HASH=$(git rev-parse --short HEAD | xargs)
 	VENV_MODULES=$(python -m pip freeze -l | awk -F '=' '/1/ {print $1}' | xargs)
@@ -162,7 +162,7 @@ update_cmake() {
   if ! which cmake > /dev/null 2>&1; then
     return
   fi
-  echo "Checking for latest CMake version..."
+    echo "Checking for latest CMake version..."
 	current_dir=$PWD
 	LATEST_CMAKE_RC=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Release Candidate " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\-rc[0-9]+" | xargs)
 	LATEST_CMAKE_RC_VERSION=$(echo $LATEST_CMAKE_RC | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
@@ -210,6 +210,43 @@ update_cmake() {
 	cd $current_dir
 }
 
+update_nvim() {
+  # If Neovim is not installed then skip
+  if ! which nvim > /dev/null 2>&1; then
+    return
+  fi
+    echo "Checking for latest Neovim version..."
+	START_DIRECTORY=$PWD
+	LATEST_NEOVIM_VERSION=$(curl -s https://github.com/neovim/neovim/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	NEOVIM_MINOR_VERSION=$(echo $LATEST_NEOVIM_VERSION | grep -oE "^[0-9]+\.[0-9]+")
+	if [ ! -z "$(which julia)" ]; then
+		CURRENT_NEOVIM_VERSION=$(nvim --version | head -n 1 | awk '{print $2}' | xargs)
+		if [ "${CURRENT_NEOVIM_VERSION}" = "${LATEST_NEOVIM_VERSION}" ]; then
+			echo "Neovim is latest version of ${LATEST_NEOVIM_VERSION}"
+			return 0
+		fi
+	fi
+	echo "Installing Neovim v${LATEST_NEOVIM_VERSION}"
+	DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/v${LATEST_NEOVIM_VERSION}/nvim-linux-x86_64.tar.gz"
+	cd $HOME/Downloads
+	wget ${DOWNLOAD_URL}
+	tar -xf nvim-linux-x86_64.tar.gz
+	NEOVIM_BINARY=/usr/bin/nvim
+	if [ -f "${NEOVIM_BINARY}" ]; then
+		sudo rm $NEOVIM_BINARY
+		sudo rm -rf /usr/share/nvim
+		sudo rm -rf /usr/lib/nvim
+	fi
+  sudo rsync -r $PWD/nvim-linux-x86_64/bin/ /usr/bin/
+  sudo rsync -r $PWD/nvim-linux-x86_64/lib/ /usr/lib/
+  sudo rsync -r $PWD/nvim-linux-x86_64/share/ /usr/share/
+	echo "Installation complete"
+	rm -rf nvim-linux-x86_64*
+	cd -
+	cd $START_DIRECTORY
+
+}
+
 # Run all upgrade scripts and also update packages
 function update_all() {
 	sudo apt update
@@ -227,4 +264,5 @@ function update_all() {
 	update_powershell
 	update_act
 	update_rust
+  update_nvim
 }
