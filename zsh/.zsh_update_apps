@@ -167,7 +167,7 @@ update_cmake() {
 	LATEST_CMAKE_RC=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Release Candidate " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\-rc[0-9]+" | xargs)
 	LATEST_CMAKE_RC_VERSION=$(echo $LATEST_CMAKE_RC | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
 	LATEST_CMAKE_VERSION=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Latest Release " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
-	UPDATE_RC=""
+  LATEST_VERSION=$(echo "${LATEST_CMAKE_RC} ${LATEST_CMAKE_VERSION}" | sort -V | awk '{print $1}')
 	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
 	if [ "$LATEST_CMAKE_RC_VERSION" = "$LATEST_CMAKE_VERSION" ]; then
 		echo "Found full release of $LATEST_CMAKE_VERSION, unknown if this is latest release candidate '$LATEST_CMAKE_RC'."
@@ -180,10 +180,10 @@ update_cmake() {
 	fi
 
 	
-	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_CMAKE_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
+	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
 		echo "Installed CMake is already latest version"
 		return 0
-	elif [ "$CURRENT_CMAKE_VERSION" = "$(echo "$LATEST_CMAKE_VERSION" | cut -d '-' -f 1 | xargs)" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
+	elif [ "$CURRENT_CMAKE_VERSION" = "$(echo "$LATEST_VERSION" | cut -d '-' -f 1 | xargs)" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
 		echo "The latest version '$LATEST_CMAKE_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
 		echo "however it is a release candidate, you should check the date of release and perform a manual update if required."
 		vared -p "Do you wish to install it? (Y/n) " -c INSTALL
@@ -191,17 +191,17 @@ update_cmake() {
 			return 0
 		fi
 	fi
-	echo "Found version $LATEST_CMAKE_VERSION, installing..."
+	echo "Found version $LATEST_VERSION, installing..."
 	cd $HOME/Downloads
-	wget https://github.com/Kitware/CMake/releases/download/v$LATEST_CMAKE_VERSION/cmake-$LATEST_CMAKE_VERSION.tar.gz
-	tar -xf $HOME/Downloads/cmake-$LATEST_CMAKE_VERSION.tar.gz
-	cd cmake-$LATEST_CMAKE_VERSION
+	wget https://github.com/Kitware/CMake/releases/download/v$LATEST_VERSION/cmake-$LATEST_VERSION.tar.gz
+	tar -xf $HOME/Downloads/cmake-$LATEST_VERSION.tar.gz
+	cd cmake-$LATEST_VERSION
 	CC=clang CXX=clang++ cmake -Bbuild -G Ninja
 	cmake --build build
 	sudo cmake --build build --target install
 	cd - > /dev/null
 	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
-	if [ "$CURRENT_CMAKE_VERSION" != "$LATEST_CMAKE_VERSION" ]; then
+	if [ "$CURRENT_CMAKE_VERSION" != "$LATEST_VERSION" ]; then
 		echo "Failed to install latest CMake"
 		cd $current_dir
 		return 1

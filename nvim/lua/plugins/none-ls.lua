@@ -18,10 +18,12 @@ return {
 			sources = {
 				null_ls.builtins.diagnostics.mypy.with({
 					prefer_local = get_venv_python_bin(),
+					extra_args = { "--ignore-missing-imports" },
 				}),
 				null_ls.builtins.diagnostics.cppcheck,
 				null_ls.builtins.formatting.ruff,
 				null_ls.builtins.diagnostics.hadolint,
+				null_ls.builtins.diagnostics.cpplint,
 			},
 		})
 	end,
