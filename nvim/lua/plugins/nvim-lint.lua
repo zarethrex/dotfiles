@@ -7,6 +7,7 @@ return {
 			markdown = { "markdownlint" },
 			cmake = { "cmakelint" },
 			python = { "ruff" },
+			cpplint = { "cpplint" },
 		},
 	},
 	config = function()
