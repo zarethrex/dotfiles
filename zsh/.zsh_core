@@ -26,7 +26,8 @@ fi
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # Environment variables
-export GOBIN=$HOME/.local/bin
+export GOBIN=/usr/local/go/bin
+export PATH=$GOBIN:$PATH
 export ANSIBLE_NOCOWS=1
 
 # Setup Pyenv
@@ -66,6 +67,12 @@ fi
 if command -v ncdu >/dev/null 2>&1; then
   alias du="ncdu"
 fi
+if command -v procs >/dev/null 2>&1; then
+  alias ps="procs"
+fi
+if command -v ping >/dev/null 2>&1; then
+  alias ping="gping"
+fi
 alias rm="rm --interactive=never"
 alias map="telnet mapscii.me"
 
@@ -91,3 +98,20 @@ echo $nvm_installed > $HOME/.nvmrc
 
 # Setup FZF if installed
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Add UV autocomplete
+if command -v uv >/dev/null; then
+  eval "$(uv generate-shell-completion zsh)"
+  _uv_run_mod() {
+      if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
+          _arguments '*:filename:_files'
+      else
+          _uv "$@"
+      fi
+  }
+  compdef _uv_run_mod uv
+fi
+
+if command -v zoxide >/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
