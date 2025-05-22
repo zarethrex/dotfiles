@@ -5,9 +5,17 @@ return {
 		"nvim-neotest/neotest-python",
 		"nvim-treesitter/nvim-treesitter",
 	},
-	adapters = {
-		["rustacean.neotest"] = {},
-	},
+	config = function()
+		require("neotest").setup({
+			adapters = {
+				require("neotest-python")({
+					dap = { justMyCode = false },
+					runner = "pytest",
+				}),
+				["rustacean.neotest"] = {},
+			},
+		})
+	end,
 	keys = {
 		{
 			"<leader>tr",
