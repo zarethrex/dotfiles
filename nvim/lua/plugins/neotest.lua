@@ -11,6 +11,8 @@ return {
 				require("neotest-python")({
 					dap = { justMyCode = false },
 					runner = "pytest",
+					console = "integratedterminal",
+					args = { "--log-level", "debug", "--no-cov" },
 				}),
 				["rustacean.neotest"] = {},
 			},

@@ -58,7 +58,7 @@ return {
 			filetypes = { "yaml" },
 			condition = function(utils)
 				local filename = vim.fn.expand("%:t")
-				return filename == "docker-compose.yaml"
+				return filename == "docker-compose.yaml" or filename == "docker-compose.yml"
 			end,
 		})
 		require("lspconfig").taplo.setup({
