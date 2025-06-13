@@ -120,3 +120,6 @@ fpath+=~/.zsh/completion
 autoload -Uz compinit
 compinit
 
+if command -v aws > /dev/null 2>&1; then
+  complete -C '/usr/local/bin/aws_completer' aws
+fi
