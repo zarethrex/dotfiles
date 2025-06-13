@@ -1,6 +1,13 @@
 vim.filetype.add({
-	["**/tasks/*.yml"] = "yaml.ansible",
-	["**/molecule/*/{converge,verify,create,destroy}.yml"] = "yaml.ansible",
-	["playbook.yml"] = "yaml.ansible",
-	["*Containerfile"] = "dockerfile",
+	pattern = {
+		[".*/roles/.*/tasks/.*%.yml"] = "yaml.ansible",
+		[".*/molecule/.*/converge.yml"] = "yaml.ansible",
+		[".*/molecule/.*/verify.yml"] = "yaml.ansible",
+		[".*/molecule/.*/create.yml"] = "yaml.ansible",
+		[".*/molecule/.*/destroy.yml"] = "yaml.ansible",
+		[".%.jinja"] = "jinja",
+		[".%.jinja2"] = "jinja",
+		["playbook.yml"] = "yaml.ansible",
+		["*Containerfile"] = "dockerfile",
+	},
 })
