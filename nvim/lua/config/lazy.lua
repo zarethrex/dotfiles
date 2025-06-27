@@ -59,20 +59,6 @@ require("lazy").setup({
 		},
 	},
 })
-require("crates").setup({
-	lsp = {
-		enabled = true,
-		on_attach = function(client, bufnr)
-			-- the same on_attach function as for your other lsp's
-		end,
-		actions = true,
-		hover = true,
-	},
-	null_ls = {
-		enabled = true,
-		name = "crates.nvim",
-	},
-})
 require("rust-tools").setup({
 	on_attach = function(_, bufnr)
 		-- Hover actions
