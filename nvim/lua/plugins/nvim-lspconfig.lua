@@ -7,6 +7,9 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
+	dependencies = {
+		"someone-stole-my-name/yaml-companion.nvim",
+	},
 	config = function()
 		require("lspconfig").pyright.setup({
 			file_types = { "python" },
@@ -26,6 +29,91 @@ return {
 				},
 			},
 		})
+		require("lspconfig").ruff.setup({})
+		require("lspconfig").dockerls.setup({})
+		require("lspconfig").jinja_lsp.setup({})
+		require("lspconfig").gh_actions_ls.setup({})
+		local yaml_companion = require("yaml-companion")
+		local schemastore_schemas = require("schemastore").yaml.schemas({
+			select = {
+				"kustomization.yaml",
+				"GitHub Workflow",
+			},
+		})
+
+		local custom_schemas = {
+			["https://raw.githubusercontent.com/ansible/molecule/main/src/molecule/data/molecule.json"] = "molecule.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/requirements.json"] = "requirements.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/galaxy.json"] = "galaxy.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta-runtime.json"] = "**/meta/runtime.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json"] = "**/meta/main.yml",
+		}
+
+		local combined_schemas = vim.tbl_deep_extend("force", {}, schemastore_schemas, custom_schemas)
+
+		require("lspconfig").yamlls.setup(yaml_companion.setup({
+			-- Match Kubernetes schemas automatically
+			builtin_matchers = {
+				kubernetes = { enabled = true },
+			},
+
+			-- Optional schemas for :Telescope yaml_schema
+			schemas = {
+				{
+					name = "Argo CD Application",
+					uri = "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/argoproj.io/application_v1alpha1.json",
+				},
+				{
+					name = "SealedSecret",
+					uri = "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/bitnami.com/sealedsecret_v1alpha1.json",
+				},
+				{
+					name = "Kustomization",
+					uri = "https://json.schemastore.org/kustomization.json",
+				},
+				{
+					name = "GitHub Workflow",
+					uri = "https://json.schemastore.org/github-workflow.json",
+				},
+				{
+					name = "Ansible Molecule Scenario Config",
+					uri = "https://raw.githubusercontent.com/ansible-community/molecule/main/src/molecule/data/molecule.json",
+				},
+				{
+					name = "Ansible Requirements File",
+					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/requirements.json",
+				},
+				{
+					name = "Ansible Galaxy File",
+					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/galaxy.json",
+				},
+				{
+					name = "Ansible Meta Runtime File",
+					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta-runtime.json",
+				},
+				{
+					name = "Ansible Meta File",
+					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json",
+				},
+			},
+
+			lspconfig = {
+				settings = {
+					yaml = {
+						validate = true,
+						schemaStore = {
+							enable = false,
+							url = "",
+						},
+						completion = true,
+						hover = true,
+						schemas = combined_schemas,
+					},
+				},
+			},
+		}))
+
+		require("telescope").load_extension("yaml_schema")
 		require("lspconfig").rust_analyzer.setup({
 			on_attach = function(client, bufnr)
 				require("crates").show()
@@ -63,6 +151,20 @@ return {
 		})
 		require("lspconfig").taplo.setup({
 			filetypes = { "toml" },
+			settings = {
+				evenBetterToml = {
+					schema = {
+						associations = {
+							{
+								-- Glob pattern to match your TOML file(s)
+								pattern = "simvue.toml", -- or "**/myconfig.toml"
+								uri = "https://raw.githubusercontent.com/simvue-io/python-api/refs/heads/v2.1/simvue/config/simvue_config_schema.json",
+							},
+						},
+						enabled = true,
+					},
+				},
+			},
 		})
 		require("lspconfig").texlab.setup({})
 		require("lspconfig").cmake.setup({})
@@ -108,14 +210,8 @@ return {
 					},
 				},
 			},
-			ruff = {
-				keys = {
-					{
-						"<leader>co",
-						LazyVim.lsp.action["source.organizeImports"],
-						desc = "Organize Imports",
-					},
-				},
+			["gh-actions"] = {
+				filetypes = { "yaml.github", "yaml.gha" },
 			},
 			ruby_lsp = {
 				enabled = lsp == "ruby_lsp",
@@ -191,52 +287,6 @@ return {
 					},
 				},
 			},
-			yamlls = {
-				-- Have to add this for yamlls to understand that we support line folding
-				capabilities = {
-					textDocument = {
-						foldingRange = {
-							dynamicRegistration = false,
-							lineFoldingOnly = true,
-						},
-					},
-				},
-				-- lazy-load schemastore when needed
-				on_new_config = function(new_config)
-					new_config.settings.yaml.schemas = vim.tbl_deep_extend(
-						"force",
-						new_config.settings.yaml.schemas or {},
-						require("schemastore").yaml.schemas()
-					)
-				end,
-				settings = {
-					redhat = { telemetry = { enabled = false } },
-					yaml = {
-						keyOrdering = false,
-						format = {
-							enable = true,
-						},
-						validate = true,
-						schemaStore = {
-							-- Must disable built-in schemaStore support to use
-							-- schemas from SchemaStore.nvim plugin
-							enable = false,
-							-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-							url = "",
-						},
-					},
-				},
-			},
-		},
-		setup = {
-			yamlls = function()
-				-- Neovim < 0.10 does not have dynamic registration for formatting
-				if vim.fn.has("nvim-0.10") == 0 then
-					LazyVim.lsp.on_attach(function(client, _)
-						client.server_capabilities.documentFormattingProvider = true
-					end, "yamlls")
-				end
-			end,
 		},
 	},
 }

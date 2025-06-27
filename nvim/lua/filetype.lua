@@ -9,6 +9,7 @@ vim.filetype.add({
 		[".%.jinja"] = "jinja",
 		[".%.jinja2"] = "jinja",
 		["playbook.yml"] = "yaml.ansible",
+		["manifest.yml"] = "yaml.ansible",
 		["*Containerfile"] = "dockerfile",
 	},
 })

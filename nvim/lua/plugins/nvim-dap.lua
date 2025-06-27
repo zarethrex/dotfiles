@@ -8,8 +8,12 @@ return {
 		{
 			"<leader>dpr",
 			function()
-				require("dap-python").test_method()
-				require("nvim-dap-julia").test_method()
+				local file_type = vim.bo.filetype
+				if file_type == "python" then
+					require("dap-python").test_method()
+				elseif file_type == "julia" then
+					require("nvim-dap-julia").test_method()
+				end
 			end,
 			desc = "Run Python Debugger",
 		},
