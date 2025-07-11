@@ -178,13 +178,12 @@ update_cmake() {
 		LATEST_CMAKE_RC=""
 		RC_TO_FULL_RELEASE="True"
 	fi
-
 	
 	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
 		echo "Installed CMake is already latest version"
 		return 0
 	elif [ "$CURRENT_CMAKE_VERSION" = "$(echo "$LATEST_VERSION" | cut -d '-' -f 1 | xargs)" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
-		echo "The latest version '$LATEST_CMAKE_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
+		echo "The latest version '$LATEST_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
 		echo "however it is a release candidate, you should check the date of release and perform a manual update if required."
 		vared -p "Do you wish to install it? (Y/n) " -c INSTALL
 	      	if [ -n "$INSTALL" ] && [ "$INSTALL" = "n" ]; then
