@@ -43,6 +43,8 @@ return {
 			"git_rebase",
 			"gitignore",
 			"gitattributes",
+			"terraform",
+			"hcl",
 		},
 	},
 }

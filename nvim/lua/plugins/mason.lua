@@ -2,6 +2,7 @@ return {
 	"williamboman/mason.nvim",
 	opts = {
 		ensure_installed = {
+			"powershell-editor-services",
 			"debugpy",
 			"cspell",
 			"mypy",
@@ -35,6 +36,7 @@ return {
 			"taplo",
 			"texlab",
 			"vue-language-server",
+			"tflint",
 		},
 	},
 }

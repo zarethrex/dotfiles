@@ -8,6 +8,8 @@ return {
 			cmake = { "cmakelint" },
 			python = { "ruff" },
 			cpplint = { "cpplint" },
+			terraform = { "tflint", "terraform_validate" },
+			tf = { "tflint", "terraform_validate" },
 		},
 	},
 	config = function()

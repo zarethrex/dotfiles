@@ -179,6 +179,7 @@ return {
 			neocmake = {},
 			marksman = {},
 			dockerls = {},
+			terraformls = {},
 			jsonls = {
 				-- lazy-load schemastore when needed
 				on_new_config = function(new_config)
