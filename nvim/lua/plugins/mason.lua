@@ -4,7 +4,7 @@ return {
 		ensure_installed = {
 			"powershell-editor-services",
 			"debugpy",
-			"cspell",
+			"codespell",
 			"mypy",
 			"pyright",
 			"ansible-language-server",
@@ -17,6 +17,7 @@ return {
 			"markdownlint",
 			"bash-language-server",
 			"pylint",
+			"basedpyright",
 			"texlab",
 			"markdown-toc",
 			"cmakelang",

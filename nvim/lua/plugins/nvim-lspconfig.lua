@@ -5,30 +5,16 @@ local function has_sourcery_config()
 	return vim.fn.filereadable(config_path) == 1 -- Check if the file is readable
 end
 
+local home = vim.fn.expand("$HOME")
+
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
 		"someone-stole-my-name/yaml-companion.nvim",
 	},
 	config = function()
-		require("lspconfig").pyright.setup({
-			file_types = { "python" },
-			settings = {
-				pyright = {
-					-- Using Ruff's import organizer
-					disableOrganizeImports = true,
-				},
-				python = {
-					analysis = {
-						-- Ignore all files for analysis to exclusively use Ruff for linting
-						ignore = { "*" },
-					},
-				},
-				mypy = {
-					extraArgs = { "--ignore-missing-imports" },
-				},
-			},
-		})
+		require("lspconfig").basedpyright.setup({})
+		require("lspconfig").codespell.setup({})
 		require("lspconfig").ruff.setup({})
 		require("lspconfig").dockerls.setup({})
 		require("lspconfig").jinja_lsp.setup({})
@@ -47,6 +33,9 @@ return {
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/galaxy.json"] = "galaxy.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta-runtime.json"] = "**/meta/runtime.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json"] = "**/meta/main.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json"] = "rulebook.yml",
+			["https://raw.githubusercontent.com/mfontanini/presenterm/master/config-file-schema.json"] = home
+				.. "/.config/presenterm/config.yaml",
 		}
 
 		local combined_schemas = vim.tbl_deep_extend("force", {}, schemastore_schemas, custom_schemas)
@@ -94,6 +83,10 @@ return {
 				{
 					name = "Ansible Meta File",
 					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json",
+				},
+				{
+					name = "Ansible Rulebook",
+					uri = "https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json",
 				},
 			},
 
