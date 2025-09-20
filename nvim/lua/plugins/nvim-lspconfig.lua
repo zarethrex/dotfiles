@@ -14,7 +14,6 @@ return {
 	},
 	config = function()
 		require("lspconfig").basedpyright.setup({})
-		require("lspconfig").codespell.setup({})
 		require("lspconfig").ruff.setup({})
 		require("lspconfig").dockerls.setup({})
 		require("lspconfig").jinja_lsp.setup({})

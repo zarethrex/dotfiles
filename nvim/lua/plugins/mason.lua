@@ -1,10 +1,9 @@
 return {
-	"williamboman/mason.nvim",
+	"mason-org/mason.nvim",
 	opts = {
 		ensure_installed = {
 			"powershell-editor-services",
 			"debugpy",
-			"codespell",
 			"mypy",
 			"pyright",
 			"ansible-language-server",
