@@ -64,14 +64,14 @@ fi
 if command -v lsd >/dev/null 2>&1; then
   alias ls="lsd"
 fi
-if command -v ncdu >/dev/null 2>&1; then
-  alias du="ncdu"
-fi
 if command -v procs >/dev/null 2>&1; then
   alias ps="procs"
 fi
 if command -v ping >/dev/null 2>&1; then
   alias ping="gping"
+fi
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
 fi
 alias rm="rm --interactive=never"
 alias map="telnet mapscii.me"

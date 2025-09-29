@@ -164,20 +164,9 @@ update_cmake() {
   fi
     echo "Checking for latest CMake version..."
 	current_dir=$PWD
-	LATEST_CMAKE_RC=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Release Candidate " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\-rc[0-9]+" | xargs)
-	LATEST_CMAKE_RC_VERSION=$(echo $LATEST_CMAKE_RC | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
 	LATEST_CMAKE_VERSION=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Latest Release " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
   LATEST_VERSION=$(echo "${LATEST_CMAKE_RC} ${LATEST_CMAKE_VERSION}" | sort -V | awk '{print $1}')
 	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
-	if [ "$LATEST_CMAKE_RC_VERSION" = "$LATEST_CMAKE_VERSION" ]; then
-		echo "Found full release of $LATEST_CMAKE_VERSION, unknown if this is latest release candidate '$LATEST_CMAKE_RC'."
-		vared -p "Do you wish to install it? (y/N) " -c INSTALL
-	      	if [ -z "$INSTALL" ] || [ "$INSTALL" = "n" ]; then
-			return 0
-		fi
-		LATEST_CMAKE_RC=""
-		RC_TO_FULL_RELEASE="True"
-	fi
 	
 	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
 		echo "Installed CMake is already latest version"
