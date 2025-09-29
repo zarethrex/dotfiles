@@ -235,15 +235,35 @@ update_nvim() {
 
 }
 
+if command apt -v >/dev/null 2>&1; then
+  OS=DEBIAN
+else
+  OS=RHEL
+fi
+
 # Run all upgrade scripts and also update packages
 function update_all() {
-	sudo apt update
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt update
+	else
+		sudo dnf update
+	fi
 	echo "Running Upgrades..."
-	sudo apt upgrade --with-new-pkgs -y
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt upgrade --with-new-pkgs -y
+	else
+		sudo dnf upgrade --refresh -y
+	fi
 	echo "Tidying Up..."
-	sudo apt autoremove
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt autoremove
+	else
+ 		sudo dnf autoremove
+	fi
 	echo "Refreshing Snap..."
-	yes | sudo snap refresh
+	if [ "$OS" = "DEBIAN" ]; then
+		yes | sudo snap refresh
+	fi
 	echo "Checking Other Packages..."
 	update_cmake
 	update_python
