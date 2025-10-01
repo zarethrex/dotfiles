@@ -33,6 +33,9 @@ return {
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta-runtime.json"] = "**/meta/runtime.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json"] = "**/meta/main.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json"] = "rulebook.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/execution-environment.json"] = "execution-environment.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/ansible-navigator.json"] = "ansible-navigator.yml",
+			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/inventory.json"] = "inventory.yml",
 			["https://raw.githubusercontent.com/mfontanini/presenterm/master/config-file-schema.json"] = home
 				.. "/.config/presenterm/config.yaml",
 		}
