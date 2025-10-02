@@ -36,6 +36,8 @@ return {
 			"taplo",
 			"texlab",
 			"vue-language-server",
+			"yaml-language-server",
+			"docker-compose-language-service",
 			"tflint",
 		},
 	},
