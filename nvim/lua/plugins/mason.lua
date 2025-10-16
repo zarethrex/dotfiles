@@ -27,6 +27,7 @@ return {
 			"tree-sitter-cli",
 			"clangd",
 			"cmake-language-server",
+			"gopls",
 			"mypy",
 			"quick-lint-js",
 			"ruff",

@@ -18,6 +18,7 @@ return {
 		require("lspconfig").dockerls.setup({})
 		require("lspconfig").jinja_lsp.setup({})
 		require("lspconfig").gh_actions_ls.setup({})
+		require("lspconfig").gopls.setup({})
 		local yaml_companion = require("yaml-companion")
 		local schemastore_schemas = require("schemastore").yaml.schemas({
 			select = {
