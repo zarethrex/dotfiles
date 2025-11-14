@@ -8,8 +8,9 @@ vim.filetype.add({
 		[".*/molecule/.*/destroy.yml"] = "yaml.ansible",
 		[".%.jinja"] = "jinja",
 		[".%.jinja2"] = "jinja",
-		["playbook.yml"] = "yaml.ansible",
-		["manifest.yml"] = "yaml.ansible",
-		["*Containerfile"] = "dockerfile",
+		[".*playbook%.yml"] = "yaml.ansible",
+		[".*manifest%.yml"] = "yaml.ansible",
+		[".*Containerfile"] = "dockerfile",
+		[".*%.cff"] = "yaml",
 	},
 })
