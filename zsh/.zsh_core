@@ -93,7 +93,7 @@ fi
 export NVM_DIR=$HOME/.nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-nvm_installed=$(nvm list | head -n 1 | awk -F '[v.]' '{print $2}' | xargs)
+nvm_installed=$(nvm list 2>/dev/null | head -n 1 | awk -F '[v.]' '{print $2}' | xargs)
 echo $nvm_installed > $HOME/.nvmrc
 
 # Setup FZF if installed

@@ -39,6 +39,7 @@ return {
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/execution-environment.json"] = "execution-environment.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/ansible-navigator.json"] = "ansible-navigator.yml",
 			["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/inventory.json"] = "inventory.yml",
+			["https://raw.githubusercontent.com/citation-file-format/citation-file-format/refs/heads/main/schema.json"] = "CITATION.cff",
 			["https://raw.githubusercontent.com/mfontanini/presenterm/master/config-file-schema.json"] = home
 				.. "/.config/presenterm/config.yaml",
 		}

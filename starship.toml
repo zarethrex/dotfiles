@@ -6,7 +6,7 @@ add_newline = true
 
 # Prompt
 format = '''
-[┌─ ](bold green)$username@$hostname:$directory$rust$package$python$docker
+[┌─ ](bold green)$username@$hostname:$directory$rust$package$python$docker$git_branch
 [└─►](bold green) '''
 
 [username]
