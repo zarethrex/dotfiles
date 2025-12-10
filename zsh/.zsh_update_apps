@@ -205,9 +205,13 @@ update_nvim() {
   fi
     echo "Checking for latest Neovim version..."
 	START_DIRECTORY=$PWD
-	LATEST_NEOVIM_VERSION=$(curl -s https://github.com/neovim/neovim/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	LATEST_NEOVIM_VERSION=$(curl -s https://github.com/neovim/neovim/tags/ | grep -oE "NVIM v[0-9]+\.[0-9]+\.[0-9]+$" | awk '{print $2}' | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	if [ -z "$LATEST_NEOVIM_VERSION" ]; then
+		echo "Failed to retrieve latest Neovim release"
+		return 1
+	fi
 	NEOVIM_MINOR_VERSION=$(echo $LATEST_NEOVIM_VERSION | grep -oE "^[0-9]+\.[0-9]+")
-	if [ ! -z "$(which julia)" ]; then
+	if [ ! -z "$(which nvim)" ]; then
 		CURRENT_NEOVIM_VERSION=$(nvim --version | head -n 1 | awk '{print $2}' | xargs)
 		if [ "${CURRENT_NEOVIM_VERSION}" = "${LATEST_NEOVIM_VERSION}" ]; then
 			echo "Neovim is latest version of ${LATEST_NEOVIM_VERSION}"
