@@ -73,6 +73,12 @@ fi
 if command -v direnv >/dev/null 2>&1; then
   eval "$(direnv hook zsh)"
 fi
+if command -v aws >/dev/null 2>&1; then
+  if command -v localstack >/dev/null 2>&1; then
+    alias aws-local="aws --profile=localstack --endpoint-url=http://127.0.0.1:4566"
+  fi
+fi
+
 alias rm="rm --interactive=never"
 alias map="telnet mapscii.me"
 
