@@ -15,7 +15,7 @@ return {
 					require("nvim-dap-julia").test_method()
 				end
 			end,
-			desc = "Run Python Debugger",
+			desc = "Run Debugger",
 		},
 		{
 			"<leader>dc",

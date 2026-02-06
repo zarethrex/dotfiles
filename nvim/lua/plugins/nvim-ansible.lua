@@ -1,11 +1,6 @@
 return {
-  "mfussenegger/nvim-ansible",
-  keys = {
-    {
-      "<leader>te",
-      function()
-        require("ansible").run()
-      end,
-    },
-  },
+	{
+		"pearofducks/ansible-vim",
+		ft = { "yaml", "yaml.ansible" },
+	},
 }
