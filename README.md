@@ -5,7 +5,7 @@ This is my collection of dotfiles used to setup my Linux/Windows development env
 ## Requirements
 
 - [Terminal Environment](#terminal-environment)
-- [Command Line Apps]
+- [Command Line Apps](#command-line-apps)
 
 ### Terminal Environment
 
