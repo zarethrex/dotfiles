@@ -210,7 +210,6 @@ update_nvim() {
 		echo "Failed to retrieve latest Neovim release"
 		return 1
 	fi
-	NEOVIM_MINOR_VERSION=$(echo $LATEST_NEOVIM_VERSION | grep -oE "^[0-9]+\.[0-9]+")
 	if [ ! -z "$(which nvim)" ]; then
 		CURRENT_NEOVIM_VERSION=$(nvim --version | head -n 1 | awk '{print $2}' | xargs)
 		if [ "${CURRENT_NEOVIM_VERSION}" = "${LATEST_NEOVIM_VERSION}" ]; then
@@ -237,6 +236,43 @@ update_nvim() {
 	cd -
 	cd $START_DIRECTORY
 
+}
+
+update_nushell() {
+  # If Nushell is not installed then skip
+  if ! which nu > /dev/null 2>&1; then
+    return
+  fi
+    echo "Checking for latest Nushell version..."
+	START_DIRECTORY=$PWD
+  LATEST_NUSHELL_VERSION=$(curl -s https://github.com/nushell/nushell/tags/ | grep -oE "tag\/[0-9]+\.[0-9]+\.[0-9]+" | cut -d '/' -f 2 | sort | uniq | tail -n 1)
+	if [ -z "$LATEST_NUSHELL_VERSION" ]; then
+		echo "Failed to retrieve latest Neovim release"
+		return 1
+	fi
+	if [ ! -z "$(which nu)" ]; then
+		CURRENT_NUSHELL_VERSION=$(nu --version | xargs)
+		if [ "${CURRENT_NUSHELL_VERSION}" = "${LATEST_NUSHELL_VERSION}" ]; then
+			echo "Nushell is latest version of ${LATEST_NUSHELL_VERSION}"
+			return 0
+		fi
+	fi
+	echo "Installing Nushell v${LATEST_NUSHELL_VERSION}"
+	DOWNLOAD_URL="https://github.com/nushell/nushell/releases/download/${LATEST_NUSHELL_VERSION}/nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+	cd $HOME/Downloads
+	wget ${DOWNLOAD_URL}
+	tar -xf nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+	NUSHELL_BINARY=/usr/bin/nu
+	if [ -f "${NUSHELL_BINARY}" ]; then
+		sudo rm $NUSHELL_BINARY
+		sudo rm -rf /usr/share/nu
+		sudo rm -rf /usr/lib/nu
+	fi
+  sudo cp $PWD/nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu/bin/gnu /usr/bin/gnu
+	echo "Installation complete"
+	rm -rf nu-*
+	cd -
+	cd $START_DIRECTORY
 }
 
 if command apt -v >/dev/null 2>&1; then
