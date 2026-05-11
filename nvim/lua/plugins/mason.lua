@@ -20,7 +20,7 @@ return {
 			"gopls",
 			"hadolint",
 			"markdown-toc",
-			"markdownlint",
+			"markdownlint-cli2",
 			"mypy",
 			"powershell-editor-services",
 			"pylint",
