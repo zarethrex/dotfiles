@@ -50,6 +50,7 @@ return {
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/playbook.json"] = "manifest.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/inventory.json"] = "inventory.yml",
 				["https://raw.githubusercontent.com/citation-file-format/citation-file-format/refs/heads/main/schema.json"] = "CITATION.cff",
+				["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = ".gitlab-ci.yml",
 				["https://raw.githubusercontent.com/mfontanini/presenterm/master/config-file-schema.json"] = home
 					.. "/.config/presenterm/config.yaml",
 			}
