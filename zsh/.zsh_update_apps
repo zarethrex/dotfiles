@@ -164,27 +164,15 @@ update_cmake() {
   fi
     echo "Checking for latest CMake version..."
 	current_dir=$PWD
-	LATEST_CMAKE_RC=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Release Candidate " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\-rc[0-9]+" | xargs)
-	LATEST_CMAKE_RC_VERSION=$(echo $LATEST_CMAKE_RC | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
 	LATEST_CMAKE_VERSION=$(curl -s https://cmake.org/download/ | grep -m 1 -E "Latest Release " | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | xargs)
   LATEST_VERSION=$(echo "${LATEST_CMAKE_RC} ${LATEST_CMAKE_VERSION}" | sort -V | awk '{print $1}')
 	CURRENT_CMAKE_VERSION=$(cmake --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" )
-	if [ "$LATEST_CMAKE_RC_VERSION" = "$LATEST_CMAKE_VERSION" ]; then
-		echo "Found full release of $LATEST_CMAKE_VERSION, unknown if this is latest release candidate '$LATEST_CMAKE_RC'."
-		vared -p "Do you wish to install it? (y/N) " -c INSTALL
-	      	if [ -z "$INSTALL" ] || [ "$INSTALL" = "n" ]; then
-			return 0
-		fi
-		LATEST_CMAKE_RC=""
-		RC_TO_FULL_RELEASE="True"
-	fi
-
 	
 	if [ "$CURRENT_CMAKE_VERSION" = "$LATEST_VERSION" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
 		echo "Installed CMake is already latest version"
 		return 0
 	elif [ "$CURRENT_CMAKE_VERSION" = "$(echo "$LATEST_VERSION" | cut -d '-' -f 1 | xargs)" ] && [ -z "$RC_TO_FULL_RELEASE" ]; then
-		echo "The latest version '$LATEST_CMAKE_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
+		echo "The latest version '$LATEST_VERSION' matches the current '$CURRENT_CMAKE_VERSION', "
 		echo "however it is a release candidate, you should check the date of release and perform a manual update if required."
 		vared -p "Do you wish to install it? (Y/n) " -c INSTALL
 	      	if [ -n "$INSTALL" ] && [ "$INSTALL" = "n" ]; then
@@ -217,9 +205,12 @@ update_nvim() {
   fi
     echo "Checking for latest Neovim version..."
 	START_DIRECTORY=$PWD
-	LATEST_NEOVIM_VERSION=$(curl -s https://github.com/neovim/neovim/releases/ | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
-	NEOVIM_MINOR_VERSION=$(echo $LATEST_NEOVIM_VERSION | grep -oE "^[0-9]+\.[0-9]+")
-	if [ ! -z "$(which julia)" ]; then
+	LATEST_NEOVIM_VERSION=$(curl -s https://github.com/neovim/neovim/tags/ | grep -oE "NVIM v[0-9]+\.[0-9]+\.[0-9]+$" | awk '{print $2}' | sort -V | tail -n 1 | cut -d 'v' -f 2 | xargs)
+	if [ -z "$LATEST_NEOVIM_VERSION" ]; then
+		echo "Failed to retrieve latest Neovim release"
+		return 1
+	fi
+	if [ ! -z "$(which nvim)" ]; then
 		CURRENT_NEOVIM_VERSION=$(nvim --version | head -n 1 | awk '{print $2}' | xargs)
 		if [ "${CURRENT_NEOVIM_VERSION}" = "${LATEST_NEOVIM_VERSION}" ]; then
 			echo "Neovim is latest version of ${LATEST_NEOVIM_VERSION}"
@@ -247,15 +238,68 @@ update_nvim() {
 
 }
 
+update_nushell() {
+  # If Nushell is not installed then skip
+  if ! which nu > /dev/null 2>&1; then
+    return
+  fi
+    echo "Checking for latest Nushell version..."
+	START_DIRECTORY=$PWD
+  LATEST_NUSHELL_VERSION=$(curl -s https://github.com/nushell/nushell/tags/ | grep -oE "tag\/[0-9]+\.[0-9]+\.[0-9]+" | cut -d '/' -f 2 | sort | uniq | tail -n 1)
+	if [ -z "$LATEST_NUSHELL_VERSION" ]; then
+		echo "Failed to retrieve latest Neovim release"
+		return 1
+	fi
+	if [ ! -z "$(which nu)" ]; then
+		CURRENT_NUSHELL_VERSION=$(nu --version | xargs)
+		if [ "${CURRENT_NUSHELL_VERSION}" = "${LATEST_NUSHELL_VERSION}" ]; then
+			echo "Nushell is latest version of ${LATEST_NUSHELL_VERSION}"
+			return 0
+		fi
+	fi
+	echo "Installing Nushell v${LATEST_NUSHELL_VERSION}"
+	DOWNLOAD_URL="https://github.com/nushell/nushell/releases/download/${LATEST_NUSHELL_VERSION}/nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+	cd $HOME/Downloads
+	wget ${DOWNLOAD_URL}
+	tar -xf nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+	NUSHELL_BINARY=/usr/bin/nu
+	if [ -f "${NUSHELL_BINARY}" ]; then
+		sudo rm $NUSHELL_BINARY
+		sudo rm -rf /usr/share/nu
+		sudo rm -rf /usr/lib/nu
+	fi
+  sudo cp $PWD/nu-${LATEST_NUSHELL_VERSION}-x86_64-unknown-linux-gnu/bin/gnu /usr/bin/gnu
+	echo "Installation complete"
+	rm -rf nu-*
+	cd -
+	cd $START_DIRECTORY
+}
+
+OS=$(cat /etc/os-release | grep -E "^ID=" | cut -d '=' -f 2)
+
 # Run all upgrade scripts and also update packages
 function update_all() {
-	sudo apt update
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt update
+	else
+		sudo dnf update
+	fi
 	echo "Running Upgrades..."
-	sudo apt upgrade --with-new-pkgs -y
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt upgrade --with-new-pkgs -y
+	else
+		sudo dnf upgrade --refresh -y
+	fi
 	echo "Tidying Up..."
-	sudo apt autoremove
+	if [ "$OS" = "DEBIAN" ]; then
+		sudo apt autoremove
+	else
+ 		sudo dnf autoremove
+	fi
 	echo "Refreshing Snap..."
-	yes | sudo snap refresh
+	if [ "$OS" = "DEBIAN" ]; then
+		yes | sudo snap refresh
+	fi
 	echo "Checking Other Packages..."
 	update_cmake
 	update_python

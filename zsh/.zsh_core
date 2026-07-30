@@ -48,6 +48,7 @@ if command -v molecule >/dev/null; then
 fi
 
 
+
 # Command overload
 if command -v icdiff >/dev/null 2>&1; then
   alias diff='icdiff'
@@ -60,12 +61,11 @@ if command -v btop >/dev/null 2>&1; then
 fi
 if command -v batcat >/dev/null 2>&1; then
   alias cat="batcat"
+elif command -v bat >/dev/null 2>&1; then
+  alias cat="bat"
 fi
 if command -v lsd >/dev/null 2>&1; then
   alias ls="lsd"
-fi
-if command -v ncdu >/dev/null 2>&1; then
-  alias du="ncdu"
 fi
 if command -v procs >/dev/null 2>&1; then
   alias ps="procs"
@@ -73,11 +73,34 @@ fi
 if command -v ping >/dev/null 2>&1; then
   alias ping="gping"
 fi
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
+if command -v aws >/dev/null 2>&1; then
+  if command -v localstack >/dev/null 2>&1; then
+    alias aws-local="aws --profile=localstack --endpoint-url=http://127.0.0.1:4566"
+  fi
+  alias ssm="aws ssm start-session --target $1"
+fi
+
 alias rm="rm --interactive=never"
 alias map="telnet mapscii.me"
 
-export PATH=$PATH:/opt/nvim-linux-x86_64/bin
-export PATH=$PATH:$HOME/.pyenv/versions/3.10.14/bin
+# Attach Neovim
+if [ -d /opt/nvim-linux-x86_64/bin ]; then
+  export PATH=$PATH:/opt/nvim-linux-x86_64/bin
+fi
+
+# Attach Git Package Manager
+if [ -d $HOME/.gpm/apps/generic-package-manager/gpm ]; then
+  export PATH=$PATH:$HOME/.gpm/apps/generic-package-manager/gpm
+fi
+
+# Attach user Python environment
+if [ -d $HOME/.venv/bin ]; then
+  export PATH=$HOME/.venv/bin:$PATH
+  alias pip="uv pip --directory $HOME"
+fi
 
 # Load Update Functions if on Debian
 if [ -f $HOME/.zsh_update_apps ]; then
@@ -89,12 +112,19 @@ if [ -d "$HOME/.cargo" ]; then
   . "$HOME/.cargo/env"
 fi
 
+# Setuo Julia
+if [ -d $HOME/.juliaup/bin ]; then
+  export PATH=$PATH:.juliaup/bin
+fi
+
 # Setup NVM and npm
-export NVM_DIR=$HOME/.nvm
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-nvm_installed=$(nvm list | head -n 1 | awk -F '[v.]' '{print $2}' | xargs)
-echo $nvm_installed > $HOME/.nvmrc
+if [ -d $HOME/.nvm ]; then
+  export NVM_DIR=$HOME/.nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  nvm_installed=$(nvm list 2>/dev/null | head -n 1 | awk -F '[v.]' '{print $2}' | xargs)
+  echo $nvm_installed > $HOME/.nvmrc
+fi
 
 # Setup FZF if installed
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -120,3 +150,13 @@ fpath+=~/.zsh/completion
 autoload -Uz compinit
 compinit
 
+# Setup AWS
+if command -v aws > /dev/null 2>&1; then
+  complete -C '/usr/local/bin/aws_completer' aws
+fi
+
+# Setup zoxide
+if command -v z >/dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
