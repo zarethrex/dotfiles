@@ -29,7 +29,6 @@ return {
 			"mypy",
 			"quick-lint-js",
 			"ruff",
-			"rust-analyzer",
 			"shfmt",
 			"stylua",
 			"taplo",
