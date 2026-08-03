@@ -27,7 +27,6 @@ return {
 			"quick-lint-js",
 			"ruby-lsp",
 			"ruff",
-			"rust-analyzer",
 			"shfmt",
 			"stylua",
 			"taplo",
