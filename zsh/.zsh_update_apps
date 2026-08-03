@@ -305,6 +305,11 @@ function update_all() {
 		yes | sudo snap refresh
 	fi
 	echo "Checking Other Packages..."
+  # If UV is installed update 
+  if which uv > /dev/null 2>&1; then
+    echo "Upgrading UV..."
+    uv self update
+  fi
 	update_cmake
 	update_python
 	update_ninja

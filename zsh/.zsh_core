@@ -142,10 +142,6 @@ if command -v uv >/dev/null; then
   compdef _uv_run_mod uv
 fi
 
-if command -v zoxide >/dev/null; then
-  eval "$(zoxide init zsh)"
-fi
-
 fpath+=~/.zsh/completion
 autoload -Uz compinit
 compinit
