@@ -1,6 +1,8 @@
 # The following update scripts assume a Debian based Linux Distribution
 # these should not be included in other OSes
 
+OS_ID=$(cat /etc/os-release | grep ID_LIKE | cut -d '=' -f 2)
+
 # Update Act GitHub Runner
 update_act() {
   # If Act is not installed skip
@@ -279,25 +281,25 @@ OS=$(cat /etc/os-release | grep -E "^ID=" | cut -d '=' -f 2)
 
 # Run all upgrade scripts and also update packages
 function update_all() {
-	if [ "$OS" = "DEBIAN" ]; then
+	if [ "$OS_ID" = "debian" ]; then
 		sudo apt update
 	else
 		sudo dnf update
 	fi
 	echo "Running Upgrades..."
-	if [ "$OS" = "DEBIAN" ]; then
+	if [ "$OS_ID" = "debian" ]; then
 		sudo apt upgrade --with-new-pkgs -y
 	else
 		sudo dnf upgrade --refresh -y
 	fi
 	echo "Tidying Up..."
-	if [ "$OS" = "DEBIAN" ]; then
+	if [ "$OS_ID" = "debian" ]; then
 		sudo apt autoremove
 	else
  		sudo dnf autoremove
 	fi
 	echo "Refreshing Snap..."
-	if [ "$OS" = "DEBIAN" ]; then
+  if ! command -v nvim >/dev/null 2>&1 && [ "$OS_ID" = "debian" ]; then
 		yes | sudo snap refresh
 	fi
 	echo "Checking Other Packages..."
