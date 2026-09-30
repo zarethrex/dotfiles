@@ -49,7 +49,7 @@ fi
 
 
 
-# Command overload
+# Command override
 if command -v icdiff >/dev/null 2>&1; then
   alias diff='icdiff'
 fi
@@ -72,6 +72,9 @@ if command -v procs >/dev/null 2>&1; then
 fi
 if command -v ping >/dev/null 2>&1; then
   alias ping="gping"
+fi
+if command -v dust >/dev/null 2>&1; then
+  alias du="dust"
 fi
 if command -v direnv >/dev/null 2>&1; then
   eval "$(direnv hook zsh)"

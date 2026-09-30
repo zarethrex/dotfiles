@@ -7,8 +7,18 @@ return {
 			-- Ensure structure exists
 			opts.servers = opts.servers or {}
 			opts.servers.yamlls = opts.servers.yamlls or {}
+			opts.servers.yamlls.filetypes = {
+				"yaml",
+				"yaml.ansible",
+			}
 			opts.servers.yamlls.settings = opts.servers.yamlls.settings or {}
 			opts.servers.yamlls.settings.yaml = opts.servers.yamlls.settings.yaml or {}
+
+			vim.filetype.add({
+				filename = {
+					["CITATION.cff"] = "yaml",
+				},
+			})
 
 			-- ✅ Extend ansible-language-server config
 			opts.servers.ansiblels = vim.tbl_deep_extend("force", opts.servers.ansiblels or {}, {
@@ -46,7 +56,7 @@ return {
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/tasks.json"] = "**/tasks/*.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json"] = "rulebook.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/execution-environment.json"] = "execution-environment.yml",
-				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/ansible-navigator.json"] = "ansible-navigator.yml",
+				["https://raw.githubusercontent.com/ansible/ansible-navigator/refs/tags/v26.9.0/src/ansible_navigator/data/ansible-navigator.json"] = "ansible-navigator.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/playbook.json"] = "manifest.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/inventory.json"] = "inventory.yml",
 				["https://raw.githubusercontent.com/citation-file-format/citation-file-format/refs/heads/main/schema.json"] = "CITATION.cff",
@@ -69,6 +79,10 @@ return {
 				kubernetes = { enabled = true },
 			},
 			schemas = {
+				{
+					name = "Citation File",
+					uri = "https://raw.githubusercontent.com/citation-file-format/citation-file-format/refs/heads/main/schema.json",
+				},
 				{
 					name = "Argo CD Application",
 					uri = "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/argoproj.io/application_v1alpha1.json",
