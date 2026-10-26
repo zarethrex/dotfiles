@@ -276,6 +276,34 @@ update_nushell() {
 	cd -
 	cd $START_DIRECTORY
 }
+update_glab() {
+  echo "Checking for latest GitLab CLI version..."
+	START_DIRECTORY=$PWD
+  LATEST_GLAB_VERSION=$(curl -s 'https://gitlab.com/api/v4/projects/gitlab-org%2Fcli/repository/tags?order_by=version&sort=desc&per_page=1' | jq -r '.[0].name' | cut -d 'v' -f 2)
+	if [ -z "$LATEST_GLAB_VERSION" ]; then
+		echo "Failed to retrieve latest GitLab CLI release"
+		return 1
+	fi
+	if [ ! -z "$(which glab)" ]; then
+		CURRENT_GLAB_VERSION=$(glab --version | awk '{print $4}')
+		if [ "${CURRENT_GLAB_VERSION}" = "${LATEST_GLAB_VERSION}" ]; then
+			echo "GitLab CLI is latest version of ${LATEST_GLAB_VERSION}"
+			return 0
+		fi
+	fi
+	echo "Installing GitLab CLI v${LATEST_GLAB_VERSION}"
+  if [ "$OS_ID" = "debian" ]; then
+	  DOWNLOAD_URL="https://gitlab.com/gitlab-org/cli/-/releases/v${LATEST_GLAB_VERSION}/downloads/glab_${LATEST_GLAB_VERSION}_linux_amd64.deb"
+	  wget ${DOWNLOAD_URL}
+    sudo dpkg -i glab_${LATEST_GLAB_VERSION}_linux_amd64.deb
+    rm glab_${LATEST_GLAB_VERSION}_linux_amd64.deb
+  else
+	  DOWNLOAD_URL="https://gitlab.com/gitlab-org/cli/-/releases/v${LATEST_GLAB_VERSION}/downloads/glab_${LATEST_GLAB_VERSION}_linux_amd64.rpm"
+	  wget ${DOWNLOAD_URL}
+    sudo rpm -ivh glab_${LATEST_GLAB_VERSION}_linux_amd64.rpm
+    rm glab_${LATEST_GLAB_VERSION}_linux_amd64.rpm
+  fi
+}
 
 OS=$(cat /etc/os-release | grep -E "^ID=" | cut -d '=' -f 2)
 
@@ -302,11 +330,14 @@ function update_all() {
   if ! command -v nvim >/dev/null 2>&1 && [ "$OS_ID" = "debian" ]; then
 		yes | sudo snap refresh
 	fi
-	echo "Checking Other Packages..."
   # If UV is installed update 
   if which uv > /dev/null 2>&1; then
     echo "Upgrading UV..."
     uv self update
+  fi
+  if which k3d > /dev/null 2>&1; then
+    echo "Updating k3d..."
+    curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
   fi
 	update_cmake
 	update_python

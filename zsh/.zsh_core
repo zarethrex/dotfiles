@@ -47,6 +47,10 @@ if command -v molecule >/dev/null; then
   eval "$(_MOLECULE_COMPLETE=zsh_source molecule)"
 fi
 
+# Setup jj autocomplete
+if command -v jj >/dev/null; then
+  source <(COMPLETE=zsh jj)
+fi
 
 
 # Command override

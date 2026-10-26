@@ -57,11 +57,18 @@ return {
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/role-arg-spec.json"] = "**/meta/argument_specs.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/meta.json"] = "**/meta/main.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/tasks.json"] = "**/tasks/*.yml",
-				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json"] = "rulebook.yml",
+				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/rulebook.json"] = {
+					"rulebook.yml",
+					"**/rulebooks/*.yml",
+				},
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/execution-environment.json"] = "execution-environment.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-navigator/refs/tags/v26.9.0/src/ansible_navigator/data/ansible-navigator.json"] = "ansible-navigator.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/playbook.json"] = "manifest.yml",
 				["https://raw.githubusercontent.com/ansible/ansible-lint/refs/heads/main/src/ansiblelint/schemas/inventory.json"] = "inventory.yml",
+				["https://raw.githubusercontent.com/compose-spec/compose-go/refs/heads/main/schema/compose-spec.json"] = {
+					"docker-compose.yaml",
+					"docker-compose.yml",
+				},
 				["https://raw.githubusercontent.com/citation-file-format/citation-file-format/refs/heads/main/schema.json"] = "CITATION.cff",
 				["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = ".gitlab-ci.yml",
 				["https://raw.githubusercontent.com/mfontanini/presenterm/master/config-file-schema.json"] = home
