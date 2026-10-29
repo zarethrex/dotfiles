@@ -351,5 +351,4 @@ function update_all() {
 	update_act
 	update_rust
   update_nvim
-  update_pi
 }
