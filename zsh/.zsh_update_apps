@@ -322,9 +322,9 @@ function update_all() {
 	fi
 	echo "Tidying Up..."
 	if [ "$OS_ID" = "debian" ]; then
-		sudo apt autoremove
+		sudo apt autoremove -y
 	else
- 		sudo dnf autoremove
+ 		sudo dnf autoremove -y
 	fi
 	echo "Refreshing Snap..."
   if ! command -v nvim >/dev/null 2>&1 && [ "$OS_ID" = "debian" ]; then
@@ -334,6 +334,10 @@ function update_all() {
   if which uv > /dev/null 2>&1; then
     echo "Upgrading UV..."
     uv self update
+  fi
+  if which pi > /dev/null 2>&1; then
+    echo "Updating pi..."
+    pi update
   fi
   if which k3d > /dev/null 2>&1; then
     echo "Updating k3d..."
@@ -347,4 +351,5 @@ function update_all() {
 	update_act
 	update_rust
   update_nvim
+  update_pi
 }
